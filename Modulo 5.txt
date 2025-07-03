@@ -1,0 +1,63 @@
+Practica 1
+
+
+date
+mkdir
+for i in {1..100}; do touch archivo$i.txt; done
+dnf install rsync openssh -y
+systemctl enable sshd --now
+systemctl status sshd
+ssh-keygen -t rsa -b 4096
+ssh-copy-id rikelvin@192.168.1.100
+ssh rikelvin@192.168.1.100
+rsync -avz -e ssh /home/rikelvin/Desktop/Origen/ rikelvin@192.168.1.100:/home/rikelvin/Desktop/Destino/
+nano sync.sh
+crontab -e
+ls /home/rikelvin/Desktop/Destino/
+date
+
+
+Practica 2
+
+
+date
+sudo dnf install -y pcs pacemaker resource-agents fence-agents-all
+sudo systemctl enable corosync
+sudo systemctl enable pacemaker
+sudo systemctl enable pcsd
+sudo firewall-cmd --add-service=hihg-availability --permanent
+sudo firewall-cmd --reload
+sudo firewall-cmd --list-all
+sudo passwd hacluster
+sudo systemctl restart pcsd
+sudo pcs host auth node1 addr=192.168.1.50 node2 addr=192.168.1.100 -u hacluster
+sudo pcs cluster setup ClusterHARicky node1 addr=192.168.1.50 node2 addr=192.168.1.100
+sudo systemctl restart corosync
+sudo systemctl restart pacemaker
+sudo systemctl restart pcsd
+sudo pcs resource create ClusterIP ocf:heartbeat:IPaddr2 ip=192.168.1.150 cidr_netmask=24 op monitor interval=30s
+sudo pcs resource config ClusterIP
+sudo pcs status
+pcs resource start ClusterIP
+sudo pcs property set stonith-enabled=false
+sudo systemctl start corosync
+sudo systemctl start pacemaker
+sudo systemctl start pcsd
+
+
+Practica 3
+
+
+sudo dnf install -y keepalived
+sudo systemctl enable keepalived
+sudo mkdir -p /var/www/html/Miweb
+sudo nano /var/www/html/Miweb/index.html
+sudo nano /etc/httpd/conf.d/Miweb.conf
+sudo systemcl restart httpd
+sudo firewall-cmd --add-service=http --permanent
+sudo firewall-cmd --reload
+cd /etc/keepalived
+sudo rm -rf *
+sudo nano keepalived.conf
+sudo systemct restart keepalived
+
